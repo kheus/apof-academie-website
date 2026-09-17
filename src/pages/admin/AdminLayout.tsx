@@ -10,6 +10,7 @@ const navItems = [
   { to: '/admin/calendrier', label: 'Calendrier' },
   { to: '/admin/annonces', label: 'Annonces' },
   { to: '/admin/preinscriptions', label: 'Pré-inscriptions' },
+  { to: '/admin/comptabilite', label: 'Comptabilité' },
   { to: '/admin/rh', label: 'RH' },
 ]
 

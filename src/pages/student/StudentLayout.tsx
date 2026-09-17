@@ -7,6 +7,7 @@ const navItems = [
   { to: '/eleve/cours', label: 'Cours' },
   { to: '/eleve/annonces', label: 'Annonces' },
   { to: '/eleve/calendrier', label: 'Calendrier' },
+  { to: '/eleve/paiements', label: 'Mes paiements' },
 ]
 
 export default function StudentLayout() {

@@ -1,38 +1,15 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
+import { supabase } from '../lib/supabase'
+import type { FeeSchedule } from '../lib/types'
+import { cfa } from '../lib/billing'
 
-const fees = [
-  {
-    cycle: 'Préscolaire',
-    sub: 'Petite, Moyenne & Grande Section',
-    inscription: '23 000 F',
-    mensualite: '10 000 F',
-    tenues: 'Blouse + fournitures scolaires',
-    tenuesMontant: '12 000 F',
-    total: '45 000 F',
-    color: 'bg-emerald-600',
-  },
-  {
-    cycle: 'Élémentaire',
-    sub: 'Du CI au CM2',
-    inscription: '20 000 F',
-    mensualite: '15 000 F',
-    tenues: '2 tenues + 1 tenue EPS',
-    tenuesMontant: '20 000 F',
-    total: '55 000 F',
-    color: 'bg-navy-700',
-  },
-  {
-    cycle: 'Moyen',
-    sub: 'De la 6ème à la 3ème',
-    inscription: '30 000 F',
-    mensualite: '17 000 F',
-    tenues: '2 tenues + 1 tenue EPS',
-    tenuesMontant: '23 000 F',
-    total: '70 000 F',
-    color: 'bg-gold-500',
-  },
-]
+const CYCLE_META: Record<string, { sub: string; tenues: string; color: string; order: number }> = {
+  'Préscolaire': { sub: 'Petite, Moyenne & Grande Section', tenues: 'Blouse + fournitures scolaires', color: 'bg-emerald-600', order: 0 },
+  'Élémentaire': { sub: 'Du CI au CM2', tenues: '2 tenues + 1 tenue EPS', color: 'bg-navy-700', order: 1 },
+  'Moyen': { sub: 'De la 6ème à la 3ème', tenues: '2 tenues + 1 tenue EPS', color: 'bg-gold-500', order: 2 },
+}
 
 const documents = [
   '02 extraits d’acte de naissance (originaux)',
@@ -52,6 +29,35 @@ const notes = [
 ]
 
 export default function Admissions() {
+  const [schedules, setSchedules] = useState<FeeSchedule[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    supabase
+      .from('fee_schedules')
+      .select('*')
+      .then(({ data }) => {
+        const rows = (data as FeeSchedule[]) ?? []
+        rows.sort((a, b) => (CYCLE_META[a.level]?.order ?? 99) - (CYCLE_META[b.level]?.order ?? 99))
+        setSchedules(rows)
+        setLoading(false)
+      })
+  }, [])
+
+  const fees = schedules.map((f) => {
+    const meta = CYCLE_META[f.level] ?? { sub: f.level, tenues: 'Tenues / fournitures', color: 'bg-navy-700', order: 99 }
+    return {
+      cycle: f.level,
+      sub: meta.sub,
+      inscription: cfa(f.registration_fee),
+      mensualite: cfa(f.monthly_fee),
+      tenues: meta.tenues,
+      tenuesMontant: cfa(f.supplies_fee),
+      total: cfa(f.registration_fee + f.supplies_fee + f.monthly_fee),
+      color: meta.color,
+    }
+  })
+
   return (
     <div>
       <PageHeader
@@ -65,6 +71,10 @@ export default function Admissions() {
           Modalités financières (tarifs & mensualités)
         </h2>
 
+        {loading ? (
+          <p className="mt-6 text-sm text-navy-400">Chargement des tarifs…</p>
+        ) : (
+          <>
         {/* Desktop table */}
         <div className="mt-6 hidden overflow-hidden rounded-2xl border border-navy-900/10 sm:block">
           <table className="w-full border-collapse text-left text-sm">
@@ -129,6 +139,8 @@ export default function Admissions() {
             </div>
           ))}
         </div>
+          </>
+        )}
 
         <div className="mt-4 rounded-xl bg-navy-950/5 px-5 py-4 text-sm text-navy-700">
           <strong className="text-navy-950">Frais de dossier d'examens</strong> (pour les

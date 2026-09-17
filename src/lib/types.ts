@@ -152,3 +152,53 @@ export interface Payroll {
   notes: string | null
   created_at: string
 }
+
+export interface FeeSchedule {
+  id: string
+  level: string
+  school_year: string
+  registration_fee: number
+  monthly_fee: number
+  supplies_fee: number
+  created_at: string
+}
+
+export type PaymentType = 'inscription' | 'mensualite' | 'tenue' | 'autre'
+export type PaymentMethod = 'especes' | 'mobile_money' | 'virement' | 'cheque' | 'autre'
+
+export interface Payment {
+  id: string
+  receipt_number: string
+  student_id: string
+  class_id: string | null
+  payment_type: PaymentType
+  period: string | null
+  amount: number
+  payment_date: string
+  payment_method: PaymentMethod
+  notes: string | null
+  recorded_by: string | null
+  created_at: string
+}
+
+export type ExpenseCategory =
+  | 'loyer'
+  | 'fournitures'
+  | 'electricite'
+  | 'eau'
+  | 'entretien'
+  | 'transport'
+  | 'materiel'
+  | 'autre'
+
+export interface Expense {
+  id: string
+  category: ExpenseCategory
+  description: string
+  amount: number
+  expense_date: string
+  payment_method: PaymentMethod
+  notes: string | null
+  recorded_by: string | null
+  created_at: string
+}

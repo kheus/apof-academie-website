@@ -23,6 +23,7 @@ import AdminCalendar from './pages/admin/AdminCalendar'
 import AdminAnnouncements from './pages/admin/AdminAnnouncements'
 import AdminAdmissions from './pages/admin/AdminAdmissions'
 import AdminHR from './pages/admin/AdminHR'
+import AdminAccounting from './pages/admin/AdminAccounting'
 
 import TeacherLayout from './pages/teacher/TeacherLayout'
 import TeacherDashboard from './pages/teacher/TeacherDashboard'
@@ -37,6 +38,7 @@ import StudentGrades from './pages/student/StudentGrades'
 import StudentCourses from './pages/student/StudentCourses'
 import StudentAnnouncements from './pages/student/StudentAnnouncements'
 import StudentCalendar from './pages/student/StudentCalendar'
+import StudentPayments from './pages/student/StudentPayments'
 
 function App() {
   return (
@@ -71,6 +73,7 @@ function App() {
           <Route path="calendrier" element={<AdminCalendar />} />
           <Route path="annonces" element={<AdminAnnouncements />} />
           <Route path="preinscriptions" element={<AdminAdmissions />} />
+          <Route path="comptabilite" element={<AdminAccounting />} />
           <Route path="rh" element={<AdminHR />} />
         </Route>
 
@@ -102,6 +105,7 @@ function App() {
           <Route path="cours" element={<StudentCourses />} />
           <Route path="annonces" element={<StudentAnnouncements />} />
           <Route path="calendrier" element={<StudentCalendar />} />
+          <Route path="paiements" element={<StudentPayments />} />
         </Route>
       </Routes>
     </>
