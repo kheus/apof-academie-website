@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import logoMark from '../assets/logo-mark.webp'
+import { useAuth } from '../context/AuthContext'
 
 const links = [
   { to: '/', label: 'Accueil' },
@@ -10,8 +11,16 @@ const links = [
   { to: '/contact', label: 'Contact' },
 ]
 
+const roleHome: Record<string, string> = {
+  admin: '/admin',
+  teacher: '/enseignant',
+  student: '/eleve',
+}
+
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const { profile } = useAuth()
+  const spaceHref = profile ? roleHome[profile.role] ?? '/connexion' : '/connexion'
 
   return (
     <header className="sticky top-0 z-50 border-b border-gold-300/40 bg-cream/95 backdrop-blur">
@@ -45,8 +54,14 @@ export default function Navbar() {
             </NavLink>
           ))}
           <Link
+            to={spaceHref}
+            className="ml-2 rounded-full border border-navy-900/15 px-4 py-2 text-sm font-bold text-navy-800 transition-colors hover:bg-navy-900/5"
+          >
+            {profile ? 'Mon espace' : 'Connexion'}
+          </Link>
+          <Link
             to="/admissions"
-            className="ml-2 rounded-full bg-gold-500 px-5 py-2 text-sm font-bold text-navy-950 shadow-sm shadow-gold-500/30 transition-transform hover:scale-[1.03] hover:bg-gold-400"
+            className="rounded-full bg-gold-500 px-5 py-2 text-sm font-bold text-navy-950 shadow-sm shadow-gold-500/30 transition-transform hover:scale-[1.03] hover:bg-gold-400"
           >
             Inscriptions 2026-2027
           </Link>
@@ -84,6 +99,13 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
+          <Link
+            to={spaceHref}
+            onClick={() => setOpen(false)}
+            className="rounded-lg px-4 py-3 text-base font-semibold text-navy-800"
+          >
+            {profile ? 'Mon espace' : 'Connexion'}
+          </Link>
         </nav>
       )}
     </header>
