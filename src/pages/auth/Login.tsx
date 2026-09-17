@@ -22,9 +22,16 @@ export default function Login() {
 
   useEffect(() => {
     if (session && profile) {
-      const target = (location.state?.from && location.state.from !== '/connexion')
-        ? location.state.from
-        : roleHome[profile.role] ?? '/'
+      const home = roleHome[profile.role] ?? '/'
+      const from = location.state?.from
+      // Only honor a redirect back to "from" if it actually belongs to this
+      // user's own space — otherwise a stale "from" (e.g. left over from a
+      // different account's session-expired redirect) could send someone
+      // straight into another role's protected area and an access-denied page.
+      const target =
+        from && from !== '/connexion' && (profile.role === 'admin' || from.startsWith(home))
+          ? from
+          : home
       navigate(target, { replace: true })
     }
   }, [session, profile, navigate, location.state])
