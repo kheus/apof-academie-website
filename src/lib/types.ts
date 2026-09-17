@@ -78,3 +78,77 @@ export interface Announcement {
   created_by: string | null
   created_at: string
 }
+
+export type FieldType = 'text' | 'textarea' | 'number' | 'date' | 'tel' | 'email' | 'select'
+
+export interface EnrollmentField {
+  id: string
+  field_key: string
+  label: string
+  field_type: FieldType
+  options: string[] | null
+  required: boolean
+  sort_order: number
+  created_at: string
+}
+
+export interface AppointmentSlot {
+  id: string
+  start_at: string
+  location: string
+  capacity: number
+  booked_count: number
+  created_at: string
+}
+
+export type AdmissionStatus = 'nouveau' | 'contacte' | 'rdv_confirme' | 'inscrit' | 'refuse'
+
+export interface AdmissionRequest {
+  id: string
+  reference: string
+  child_full_name: string
+  child_birthdate: string | null
+  desired_class_id: string | null
+  parent_name: string
+  parent_phone: string
+  parent_email: string | null
+  responses: Record<string, string>
+  slot_id: string | null
+  status: AdmissionStatus
+  admin_notes: string | null
+  created_at: string
+}
+
+export type ContractType = 'CDI' | 'CDD' | 'Vacataire'
+export type ContractStatus = 'actif' | 'termine' | 'suspendu'
+
+export interface TeacherContract {
+  id: string
+  teacher_id: string
+  contract_type: ContractType
+  position: string
+  start_date: string
+  end_date: string | null
+  monthly_salary: number
+  file_url: string | null
+  status: ContractStatus
+  notes: string | null
+  created_at: string
+}
+
+export type PayrollStatus = 'en_attente' | 'paye'
+
+export interface Payroll {
+  id: string
+  teacher_id: string
+  contract_id: string | null
+  period: string
+  base_salary: number
+  bonuses: number
+  deductions: number
+  net_pay: number
+  status: PayrollStatus
+  paid_at: string | null
+  notes: string | null
+  created_at: string
+}

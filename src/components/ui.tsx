@@ -90,3 +90,32 @@ export function ErrorText({ children }: { children: ReactNode }) {
 export function TableWrap({ children }: { children: ReactNode }) {
   return <div className="overflow-x-auto">{children}</div>
 }
+
+export function Tabs<T extends string>({
+  tabs,
+  active,
+  onChange,
+}: {
+  tabs: { value: T; label: string }[]
+  active: T
+  onChange: (value: T) => void
+}) {
+  return (
+    <div className="flex gap-1 overflow-x-auto border-b border-navy-900/10">
+      {tabs.map((t) => (
+        <button
+          key={t.value}
+          type="button"
+          onClick={() => onChange(t.value)}
+          className={`whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-bold transition-colors ${
+            active === t.value
+              ? 'border-gold-500 text-navy-950'
+              : 'border-transparent text-navy-400 hover:text-navy-700'
+          }`}
+        >
+          {t.label}
+        </button>
+      ))}
+    </div>
+  )
+}

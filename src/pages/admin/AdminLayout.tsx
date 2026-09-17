@@ -9,6 +9,8 @@ const navItems = [
   { to: '/admin/cours', label: 'Cours' },
   { to: '/admin/calendrier', label: 'Calendrier' },
   { to: '/admin/annonces', label: 'Annonces' },
+  { to: '/admin/preinscriptions', label: 'Pré-inscriptions' },
+  { to: '/admin/rh', label: 'RH' },
 ]
 
 export default function AdminLayout() {

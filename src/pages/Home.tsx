@@ -73,10 +73,10 @@ export default function Home() {
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row md:justify-start">
               <Link
-                to="/admissions"
+                to="/pre-inscription"
                 className="w-full rounded-full bg-gold-500 px-7 py-3 text-center font-heading text-sm font-bold text-navy-950 shadow-lg shadow-gold-500/20 transition-transform hover:scale-[1.03] hover:bg-gold-400 sm:w-auto"
               >
-                S'inscrire pour 2026-2027
+                Faire ma pré-inscription
               </Link>
               <Link
                 to="/contact"

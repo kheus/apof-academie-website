@@ -6,6 +6,7 @@ const navItems = [
   { to: '/enseignant/cours', label: 'Cours' },
   { to: '/enseignant/notes', label: 'Notes' },
   { to: '/enseignant/calendrier', label: 'Calendrier' },
+  { to: '/enseignant/rh', label: 'Contrat & Paie' },
 ]
 
 export default function TeacherLayout() {

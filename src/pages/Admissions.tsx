@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
 
 const fees = [
@@ -168,21 +169,22 @@ export default function Admissions() {
             Prêt à inscrire votre enfant ?
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm text-navy-100/90">
-            Contactez-nous par téléphone, WhatsApp ou e-mail pour finaliser
-            l'inscription ou poser vos questions sur les modalités.
+            Faites votre demande de pré-inscription en ligne et obtenez un
+            rendez-vous, ou contactez-nous directement par téléphone, WhatsApp
+            ou e-mail.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href="tel:+221775456391"
+            <Link
+              to="/pre-inscription"
               className="w-full rounded-full bg-gold-500 px-7 py-3 text-center font-heading text-sm font-bold text-navy-950 transition-transform hover:scale-[1.03] hover:bg-gold-400 sm:w-auto"
             >
-              📞 +221 77 545 63 91
-            </a>
+              📝 Pré-inscription en ligne
+            </Link>
             <a
-              href="mailto:apofacademie@gmail.com"
+              href="tel:+221775456391"
               className="w-full rounded-full border border-gold-300/50 px-7 py-3 text-center font-heading text-sm font-bold text-white transition-colors hover:bg-white/10 sm:w-auto"
             >
-              ✉️ apofacademie@gmail.com
+              📞 +221 77 545 63 91
             </a>
           </div>
         </div>

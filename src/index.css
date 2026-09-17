@@ -30,3 +30,16 @@ body {
 h1, h2, h3, h4, .font-heading {
   font-family: var(--font-heading);
 }
+
+@media print {
+  header, nav, footer, .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+  .print-area {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}

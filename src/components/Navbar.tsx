@@ -8,6 +8,7 @@ const links = [
   { to: '/a-propos', label: 'À propos' },
   { to: '/programmes', label: 'Programmes' },
   { to: '/admissions', label: 'Admissions & Tarifs' },
+  { to: '/pre-inscription', label: 'Pré-inscription' },
   { to: '/contact', label: 'Contact' },
 ]
 
@@ -60,10 +61,10 @@ export default function Navbar() {
             {profile ? 'Mon espace' : 'Connexion'}
           </Link>
           <Link
-            to="/admissions"
+            to="/pre-inscription"
             className="rounded-full bg-gold-500 px-5 py-2 text-sm font-bold text-navy-950 shadow-sm shadow-gold-500/30 transition-transform hover:scale-[1.03] hover:bg-gold-400"
           >
-            Inscriptions 2026-2027
+            Pré-inscription 2026-2027
           </Link>
         </nav>
 

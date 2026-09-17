@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import About from './pages/About'
 import Programs from './pages/Programs'
 import Admissions from './pages/Admissions'
+import PreInscription from './pages/PreInscription'
 import Contact from './pages/Contact'
 
 import Login from './pages/auth/Login'
@@ -20,12 +21,15 @@ import AdminGrades from './pages/admin/AdminGrades'
 import AdminCourses from './pages/admin/AdminCourses'
 import AdminCalendar from './pages/admin/AdminCalendar'
 import AdminAnnouncements from './pages/admin/AdminAnnouncements'
+import AdminAdmissions from './pages/admin/AdminAdmissions'
+import AdminHR from './pages/admin/AdminHR'
 
 import TeacherLayout from './pages/teacher/TeacherLayout'
 import TeacherDashboard from './pages/teacher/TeacherDashboard'
 import TeacherCourses from './pages/teacher/TeacherCourses'
 import TeacherGrades from './pages/teacher/TeacherGrades'
 import TeacherCalendar from './pages/teacher/TeacherCalendar'
+import TeacherHR from './pages/teacher/TeacherHR'
 
 import StudentLayout from './pages/student/StudentLayout'
 import StudentDashboard from './pages/student/StudentDashboard'
@@ -44,6 +48,7 @@ function App() {
           <Route path="/a-propos" element={<About />} />
           <Route path="/programmes" element={<Programs />} />
           <Route path="/admissions" element={<Admissions />} />
+          <Route path="/pre-inscription" element={<PreInscription />} />
           <Route path="/contact" element={<Contact />} />
         </Route>
 
@@ -65,6 +70,8 @@ function App() {
           <Route path="cours" element={<AdminCourses />} />
           <Route path="calendrier" element={<AdminCalendar />} />
           <Route path="annonces" element={<AdminAnnouncements />} />
+          <Route path="preinscriptions" element={<AdminAdmissions />} />
+          <Route path="rh" element={<AdminHR />} />
         </Route>
 
         <Route
@@ -79,6 +86,7 @@ function App() {
           <Route path="cours" element={<TeacherCourses />} />
           <Route path="notes" element={<TeacherGrades />} />
           <Route path="calendrier" element={<TeacherCalendar />} />
+          <Route path="rh" element={<TeacherHR />} />
         </Route>
 
         <Route
