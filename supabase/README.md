@@ -60,14 +60,27 @@ update public.profiles set role = 'admin' where email = 'votre-email@exemple.com
 
 ## 6. Créer les comptes enseignants et élèves
 
-Toujours depuis **Authentication → Add user** dans Supabase, créez un
-compte (e-mail + mot de passe) pour chaque enseignant et chaque élève (ou
-son parent). Communiquez-leur ensuite ces identifiants.
+Depuis l'espace **Administration → Utilisateurs** du site, cliquez sur
+**"+ Créer un utilisateur"** : indiquez le nom complet, l'e-mail (suggéré
+automatiquement), le rôle et — pour un élève — la classe. Le compte est
+créé et un mot de passe fort est généré automatiquement, affiché **une
+seule fois** dans un encadré à copier. Notez-le avant de le fermer, puis
+transmettez-le à la personne concernée de façon sécurisée.
 
-Un compte est "élève" par défaut. Depuis l'espace **Administration →
-Utilisateurs** du site, vous pouvez :
-- changer le rôle (admin / enseignant / élève),
-- assigner un élève à sa classe,
+Ce bouton appelle une fonction serveur (Edge Function Supabase) nommée
+`admin-create-user` (voir [`functions/admin-create-user/index.ts`](./functions/admin-create-user/index.ts)),
+qui est la seule à détenir la clé privilégiée nécessaire pour créer un
+compte — cette clé ne se trouve jamais dans le site ni le navigateur. La
+fonction vérifie d'abord que la personne qui appelle est bien connectée en
+tant qu'admin avant de créer quoi que ce soit.
+
+Vous pouvez aussi, comme avant, créer un compte directement depuis
+**Authentication → Add user** dans Supabase — utile pour un premier compte
+admin (voir étape 5) ou en secours.
+
+Depuis **Administration → Utilisateurs**, vous pouvez aussi :
+- changer le rôle (admin / enseignant / élève) d'un compte existant,
+- réassigner un élève à sa classe,
 - assigner un enseignant à ses classes et matières ("Assignations").
 
 Tout le reste (notes, cours, calendrier, annonces) se gère ensuite
