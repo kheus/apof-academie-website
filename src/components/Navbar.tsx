@@ -3,12 +3,14 @@ import { Link, NavLink } from 'react-router-dom'
 import logoMark from '../assets/logo-mark.webp'
 import { useAuth } from '../context/AuthContext'
 
+// "Pré-inscription" is intentionally not repeated here — the gold button
+// already covers that destination as the nav's primary call to action, so
+// listing it twice side by side would be redundant.
 const links = [
   { to: '/', label: 'Accueil' },
   { to: '/a-propos', label: 'À propos' },
   { to: '/programmes', label: 'Programmes' },
   { to: '/admissions', label: 'Admissions & Tarifs' },
-  { to: '/pre-inscription', label: 'Pré-inscription' },
   { to: '/contact', label: 'Contact' },
 ]
 
@@ -38,7 +40,7 @@ export default function Navbar() {
           </span>
         </NavLink>
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-1 xl:flex">
           {links.map((link) => (
             <NavLink
               key={link.to}
@@ -71,7 +73,7 @@ export default function Navbar() {
         <button
           type="button"
           aria-label="Ouvrir le menu"
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-navy-900 lg:hidden"
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-navy-900 xl:hidden"
           onClick={() => setOpen((v) => !v)}
         >
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -85,7 +87,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <nav className="flex flex-col gap-1 border-t border-gold-300/40 bg-cream px-4 pb-4 pt-2 lg:hidden">
+        <nav className="flex flex-col gap-1 border-t border-gold-300/40 bg-cream px-4 pb-4 pt-2 xl:hidden">
           {links.map((link) => (
             <NavLink
               key={link.to}
@@ -106,6 +108,13 @@ export default function Navbar() {
             className="rounded-lg px-4 py-3 text-base font-semibold text-navy-800"
           >
             {profile ? 'Mon espace' : 'Connexion'}
+          </Link>
+          <Link
+            to="/pre-inscription"
+            onClick={() => setOpen(false)}
+            className="mt-2 rounded-lg bg-gold-500 px-4 py-3 text-center text-base font-bold text-navy-950"
+          >
+            Pré-inscription 2026-2027
           </Link>
         </nav>
       )}

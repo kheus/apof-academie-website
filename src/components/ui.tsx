@@ -1,8 +1,18 @@
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from 'react'
 
-export function Card({ title, action, children }: { title?: string; action?: ReactNode; children: ReactNode }) {
+export function Card({
+  title,
+  action,
+  children,
+  className = '',
+}: {
+  title?: string
+  action?: ReactNode
+  children: ReactNode
+  className?: string
+}) {
   return (
-    <div className="rounded-2xl border border-navy-900/10 bg-white p-5 shadow-sm sm:p-6">
+    <div className={`rounded-2xl border border-navy-900/10 bg-white p-5 shadow-sm sm:p-6 ${className}`}>
       {(title || action) && (
         <div className="mb-4 flex items-center justify-between gap-3">
           {title && <h2 className="font-heading text-lg font-bold text-navy-950">{title}</h2>}

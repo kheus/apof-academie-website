@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import type { Profile, SchoolClass, Subject, TeacherAssignment } from '../../lib/types'
-import { Button, Card, EmptyState, ErrorText, Select, TableWrap } from '../../components/ui'
+import { Button, Card, EmptyState, ErrorText, Input, Select, TableWrap } from '../../components/ui'
 
 export default function AdminUsers() {
   const [profiles, setProfiles] = useState<Profile[]>([])
@@ -75,8 +75,8 @@ export default function AdminUsers() {
           <h1 className="font-heading text-2xl font-bold text-navy-950">Utilisateurs</h1>
           <p className="mt-1 max-w-2xl text-sm text-navy-500">
             Les comptes (e-mail + mot de passe) se créent depuis le tableau de bord Supabase
-            (Authentication → Add user). Ici, vous attribuez le rôle, la classe et — pour les
-            enseignants — les matières/classes enseignées.
+            (Authentication → Add user). Ici, vous ajustez le nom affiché, le rôle, la classe
+            et — pour les enseignants — les matières/classes enseignées.
           </p>
         </div>
         <Select value={filter} onChange={(e) => setFilter(e.target.value as typeof filter)} className="w-40">
@@ -111,7 +111,16 @@ export default function AdminUsers() {
                   {visible.map((p) => (
                     <Fragment key={p.id}>
                       <tr className="border-b border-navy-900/5">
-                        <td className="py-2.5 pr-3 font-semibold text-navy-900">{p.full_name}</td>
+                        <td className="py-2.5 pr-3">
+                          <Input
+                            defaultValue={p.full_name ?? ''}
+                            onBlur={(e) => {
+                              const value = e.target.value.trim()
+                              if (value && value !== p.full_name) updateProfile(p.id, { full_name: value })
+                            }}
+                            className="min-w-[10rem] border-transparent bg-transparent px-1 py-0.5 font-semibold text-navy-900 hover:border-navy-900/15 focus:bg-white"
+                          />
+                        </td>
                         <td className="py-2.5 pr-3 text-navy-600">{p.email}</td>
                         <td className="py-2.5 pr-3">
                           <Select

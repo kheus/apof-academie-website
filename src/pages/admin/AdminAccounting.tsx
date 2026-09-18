@@ -662,7 +662,7 @@ function BilanTab({ classes, feeSchedules }: { classes: SchoolClass[]; feeSchedu
 
   return (
     <div>
-      <Card>
+      <Card className="no-print">
         <div className="flex flex-wrap items-end gap-3">
           <Field label="Du">
             <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
@@ -670,11 +670,21 @@ function BilanTab({ classes, feeSchedules }: { classes: SchoolClass[]; feeSchedu
           <Field label="Au">
             <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
           </Field>
-          <Button variant="ghost" className="no-print" onClick={() => window.print()}>🖨️ Imprimer le bilan</Button>
+          <Button variant="ghost" onClick={() => window.print()}>🖨️ Imprimer le bilan</Button>
         </div>
       </Card>
 
       <div className="print-area mt-6">
+        <div className="mb-6 hidden items-center gap-4 border-b border-navy-900/10 pb-6 print:flex">
+          <img src={logoMark} alt="APOF" className="h-14 w-auto" />
+          <div>
+            <p className="font-heading text-lg font-bold text-navy-950">Académie Papa Ousmane Fall</p>
+            <p className="text-sm text-navy-500">
+              Bilan financier — du {new Date(from).toLocaleDateString('fr-FR', { dateStyle: 'long' })} au{' '}
+              {new Date(to).toLocaleDateString('fr-FR', { dateStyle: 'long' })}
+            </p>
+          </div>
+        </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatTile label="Recettes totales" value={cfa(totalRecettes)} tone="navy" />
           <StatTile label="Dépenses totales" value={cfa(totalDepenses)} tone="navy" />

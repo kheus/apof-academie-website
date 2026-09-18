@@ -7,9 +7,11 @@ interface AuthContextValue {
   session: Session | null
   profile: Profile | null
   loading: boolean
+  passwordRecovery: boolean
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
+  completePasswordRecovery: (password: string) => Promise<{ error: string | null }>
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
@@ -18,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [passwordRecovery, setPasswordRecovery] = useState(false)
 
   async function loadProfile(userId: string) {
     const { data } = await supabase.from('profiles').select('*').eq('id', userId).single()
@@ -34,7 +37,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false)
     })
 
-    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+    const { data: listener } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      if (event === 'PASSWORD_RECOVERY') setPasswordRecovery(true)
+      // A sign-out (including "cancel" from the new-password form) must
+      // clear the flag — otherwise a later, completely normal sign-in would
+      // still show the recovery form instead of going straight to the
+      // person's space, since nothing else ever resets it back to false.
+      if (event === 'SIGNED_OUT') setPasswordRecovery(false)
       setSession(newSession)
       if (newSession) {
         await loadProfile(newSession.user.id)
@@ -62,8 +71,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (session) await loadProfile(session.user.id)
   }
 
+  async function completePasswordRecovery(password: string) {
+    const { error } = await supabase.auth.updateUser({ password })
+    if (!error) setPasswordRecovery(false)
+    return { error: error ? error.message : null }
+  }
+
   return (
-    <AuthContext.Provider value={{ session, profile, loading, signIn, signOut, refreshProfile }}>
+    <AuthContext.Provider
+      value={{ session, profile, loading, passwordRecovery, signIn, signOut, refreshProfile, completePasswordRecovery }}
+    >
       {children}
     </AuthContext.Provider>
   )
