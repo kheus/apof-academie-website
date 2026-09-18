@@ -153,8 +153,9 @@ alter table public.courses enable row level security;
 alter table public.calendar_events enable row level security;
 alter table public.announcements enable row level security;
 
--- classes & subjects: readable by any signed-in user, writable by admin only
-create policy "classes_select_all" on public.classes for select using (auth.role() = 'authenticated');
+-- classes: public read (the pre-registration form needs the class list
+-- before the visitor has an account), writable by admin only
+create policy "classes_select_all" on public.classes for select using (true);
 create policy "classes_write_admin" on public.classes for all using (public.is_admin()) with check (public.is_admin());
 
 create policy "subjects_select_all" on public.subjects for select using (auth.role() = 'authenticated');
