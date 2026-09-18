@@ -2,25 +2,32 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useTeacherAssignments } from '../../hooks/useTeacherAssignments'
 import { supabase } from '../../lib/supabase'
-import type { CalendarEvent } from '../../lib/types'
-import { Button, Card, EmptyState, ErrorText, Field, Input, Select, TextArea } from '../../components/ui'
+import type { CalendarEvent, SchoolClass } from '../../lib/types'
+import { Button, Card, ErrorText, Field, Input, Select, TextArea } from '../../components/ui'
+import EventCalendar from '../../components/EventCalendar'
 
 export default function TeacherCalendar() {
   const { profile } = useAuth()
   const { assignments } = useTeacherAssignments()
   const [events, setEvents] = useState<CalendarEvent[]>([])
+  const [classes, setClasses] = useState<SchoolClass[]>([])
   const [error, setError] = useState<string | null>(null)
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [startAt, setStartAt] = useState('')
+  const [endAt, setEndAt] = useState('')
   const [classId, setClassId] = useState('')
 
   const myClasses = Array.from(new Map(assignments.map((a) => [a.class_id, a.class_name])).entries())
 
   async function load() {
-    const { data } = await supabase.from('calendar_events').select('*').order('start_at', { ascending: true })
-    setEvents((data as CalendarEvent[]) ?? [])
+    const [e, c] = await Promise.all([
+      supabase.from('calendar_events').select('*').order('start_at', { ascending: true }),
+      supabase.from('classes').select('*').order('name'),
+    ])
+    setEvents((e.data as CalendarEvent[]) ?? [])
+    setClasses((c.data as SchoolClass[]) ?? [])
   }
 
   useEffect(() => {
@@ -39,6 +46,7 @@ export default function TeacherCalendar() {
         title,
         description,
         start_at: new Date(startAt).toISOString(),
+        end_at: endAt ? new Date(endAt).toISOString() : null,
         audience: 'class',
         class_id: classId,
         created_by: profile?.id,
@@ -50,6 +58,7 @@ export default function TeacherCalendar() {
     setTitle('')
     setDescription('')
     setStartAt('')
+    setEndAt('')
   }
 
   async function deleteEvent(id: string) {
@@ -71,8 +80,11 @@ export default function TeacherCalendar() {
               <Field label="Titre">
                 <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="ex: Sortie pédagogique" />
               </Field>
-              <Field label="Date et heure">
+              <Field label="Début">
                 <Input type="datetime-local" value={startAt} onChange={(e) => setStartAt(e.target.value)} />
+              </Field>
+              <Field label="Fin (facultatif)">
+                <Input type="datetime-local" value={endAt} onChange={(e) => setEndAt(e.target.value)} />
               </Field>
               <Field label="Classe">
                 <Select value={classId} onChange={(e) => setClassId(e.target.value)}>
@@ -93,29 +105,13 @@ export default function TeacherCalendar() {
         </div>
       )}
 
-      <div className="mt-6 space-y-3">
-        {events.length === 0 ? (
-          <Card><EmptyState>Aucun événement à venir.</EmptyState></Card>
-        ) : (
-          events.map((e) => (
-            <Card key={e.id}>
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-gold-600">
-                    {new Date(e.start_at).toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' })}
-                  </p>
-                  <h3 className="mt-1 font-heading font-bold text-navy-950">{e.title}</h3>
-                  {e.description && <p className="mt-1 text-sm text-navy-600">{e.description}</p>}
-                </div>
-                {e.created_by === profile?.id && (
-                  <button onClick={() => deleteEvent(e.id)} className="shrink-0 text-xs font-bold text-red-500 hover:text-red-700">
-                    Supprimer
-                  </button>
-                )}
-              </div>
-            </Card>
-          ))
-        )}
+      <div className="mt-6">
+        <EventCalendar
+          events={events}
+          classes={classes}
+          onDelete={deleteEvent}
+          canDelete={(e) => e.created_by === profile?.id}
+        />
       </div>
     </div>
   )

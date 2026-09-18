@@ -1,26 +1,23 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import type { CalendarEvent } from '../../lib/types'
-import { Card, EmptyState } from '../../components/ui'
+import type { CalendarEvent, SchoolClass } from '../../lib/types'
+import EventCalendar from '../../components/EventCalendar'
 
 export default function StudentCalendar() {
   const [events, setEvents] = useState<CalendarEvent[]>([])
+  const [classes, setClasses] = useState<SchoolClass[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase
-      .from('calendar_events')
-      .select('*')
-      .order('start_at', { ascending: true })
-      .then(({ data }) => {
-        setEvents((data as CalendarEvent[]) ?? [])
-        setLoading(false)
-      })
+    Promise.all([
+      supabase.from('calendar_events').select('*').order('start_at', { ascending: true }),
+      supabase.from('classes').select('*').order('name'),
+    ]).then(([e, c]) => {
+      setEvents((e.data as CalendarEvent[]) ?? [])
+      setClasses((c.data as SchoolClass[]) ?? [])
+      setLoading(false)
+    })
   }, [])
-
-  const now = new Date()
-  const upcoming = events.filter((e) => new Date(e.start_at) >= now)
-  const past = events.filter((e) => new Date(e.start_at) < now)
 
   return (
     <div>
@@ -28,43 +25,12 @@ export default function StudentCalendar() {
       <p className="mt-1 text-sm text-navy-500">Les événements de l'école et de votre classe.</p>
 
       <div className="mt-6">
-        <Card title="À venir">
-          {loading ? (
-            <EmptyState>Chargement…</EmptyState>
-          ) : upcoming.length === 0 ? (
-            <EmptyState>Aucun événement à venir.</EmptyState>
-          ) : (
-            <ul className="space-y-3">
-              {upcoming.map((e) => (
-                <li key={e.id} className="border-b border-navy-900/5 pb-3 last:border-0 last:pb-0">
-                  <p className="text-xs font-bold uppercase tracking-wide text-gold-600">
-                    {new Date(e.start_at).toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' })}
-                  </p>
-                  <p className="font-semibold text-navy-900">{e.title}</p>
-                  {e.description && <p className="text-sm text-navy-600">{e.description}</p>}
-                </li>
-              ))}
-            </ul>
-          )}
-        </Card>
+        {loading ? (
+          <p className="text-sm text-navy-400">Chargement…</p>
+        ) : (
+          <EventCalendar events={events} classes={classes} />
+        )}
       </div>
-
-      {past.length > 0 && (
-        <div className="mt-6">
-          <Card title="Passés">
-            <ul className="space-y-3">
-              {past.slice(0, 5).map((e) => (
-                <li key={e.id} className="border-b border-navy-900/5 pb-3 text-navy-400 last:border-0 last:pb-0">
-                  <p className="text-xs font-bold uppercase tracking-wide">
-                    {new Date(e.start_at).toLocaleDateString('fr-FR', { dateStyle: 'long' })}
-                  </p>
-                  <p className="font-semibold">{e.title}</p>
-                </li>
-              ))}
-            </ul>
-          </Card>
-        </div>
-      )}
     </div>
   )
 }

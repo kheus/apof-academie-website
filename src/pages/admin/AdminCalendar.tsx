@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import type { Audience, CalendarEvent, SchoolClass } from '../../lib/types'
-import { Button, Card, EmptyState, ErrorText, Field, Input, Select, TextArea } from '../../components/ui'
+import { Button, Card, ErrorText, Field, Input, Select, TextArea } from '../../components/ui'
+import EventCalendar from '../../components/EventCalendar'
 
 const AUDIENCES: { value: Audience; label: string }[] = [
   { value: 'all', label: 'Tout le monde' },
@@ -20,6 +21,7 @@ export default function AdminCalendar() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [startAt, setStartAt] = useState('')
+  const [endAt, setEndAt] = useState('')
   const [audience, setAudience] = useState<Audience>('all')
   const [classId, setClassId] = useState('')
 
@@ -48,6 +50,7 @@ export default function AdminCalendar() {
         title,
         description,
         start_at: new Date(startAt).toISOString(),
+        end_at: endAt ? new Date(endAt).toISOString() : null,
         audience,
         class_id: audience === 'class' ? classId || null : null,
         created_by: profile?.id,
@@ -59,6 +62,7 @@ export default function AdminCalendar() {
     setTitle('')
     setDescription('')
     setStartAt('')
+    setEndAt('')
   }
 
   async function deleteEvent(id: string) {
@@ -79,8 +83,11 @@ export default function AdminCalendar() {
             <Field label="Titre">
               <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="ex: Conseil de classe" />
             </Field>
-            <Field label="Date et heure">
+            <Field label="Début">
               <Input type="datetime-local" value={startAt} onChange={(e) => setStartAt(e.target.value)} />
+            </Field>
+            <Field label="Fin (facultatif)">
+              <Input type="datetime-local" value={endAt} onChange={(e) => setEndAt(e.target.value)} />
             </Field>
             <Field label="Destinataires">
               <Select value={audience} onChange={(e) => setAudience(e.target.value as Audience)}>
@@ -107,31 +114,8 @@ export default function AdminCalendar() {
         </Card>
       </div>
 
-      <div className="mt-6 space-y-3">
-        {events.length === 0 ? (
-          <Card><EmptyState>Aucun événement programmé.</EmptyState></Card>
-        ) : (
-          events.map((e) => (
-            <Card key={e.id}>
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-gold-600">
-                    {new Date(e.start_at).toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' })}
-                  </p>
-                  <h3 className="mt-1 font-heading font-bold text-navy-950">{e.title}</h3>
-                  {e.description && <p className="mt-1 text-sm text-navy-600">{e.description}</p>}
-                  <p className="mt-1 text-xs text-navy-400">
-                    Pour : {AUDIENCES.find((a) => a.value === e.audience)?.label}
-                    {e.audience === 'class' && ` — ${classes.find((c) => c.id === e.class_id)?.name ?? ''}`}
-                  </p>
-                </div>
-                <button onClick={() => deleteEvent(e.id)} className="shrink-0 text-xs font-bold text-red-500 hover:text-red-700">
-                  Supprimer
-                </button>
-              </div>
-            </Card>
-          ))
-        )}
+      <div className="mt-6">
+        <EventCalendar events={events} classes={classes} onDelete={deleteEvent} />
       </div>
     </div>
   )
